@@ -1,0 +1,55 @@
+name: Gerar APK ZenFi
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'android-app/**'
+      - '.github/workflows/android.yml'
+
+env:
+  ANDROID_PROJECT_DIR: android-app
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar o código do repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Configurar Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Instalar SDK necessário
+        run: |
+          sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Configurar Gradle 8.7
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Verificar endereço do ZenFi
+        working-directory: android-app
+        run: |
+          if grep -q 'https://SEU-ENDERECO.exemplo.com' app/src/main/res/values/strings.xml; then
+            echo 'ATENÇÃO: troque https://SEU-ENDERECO.exemplo.com pelo endereço HTTPS real do ZenFi em android-app/app/src/main/res/values/strings.xml.'
+          fi
+
+      - name: Compilar APK
+        working-directory: android-app
+        run: gradle assembleDebug --no-daemon
+
+      - name: Disponibilizar APK para download
+        uses: actions/upload-artifact@v4
+        with:
+          name: ZenFi-apk
+          path: android-app/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          retention-days: 14

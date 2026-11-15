@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.exemplo
+__pycache__/
+*.py[cod]
+dados/
+*.db
+*.sqlite
+*.sqlite3

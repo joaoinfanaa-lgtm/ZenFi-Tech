@@ -1,0 +1,12 @@
+.git
+.github
+android-app
+tests
+dados
+.env
+__pycache__
+*.pyc
+*.db
+*.db-wal
+*.db-shm
+*.md

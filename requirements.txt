@@ -1,1 +1,0 @@
-# O servidor usa apenas a biblioteca padrão do Python.\n
